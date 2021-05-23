@@ -63,7 +63,7 @@
                             transition
                             hover:opacity-40
                         "
-                        @click="clickAll"
+                        @click="clickFilter('all')"
                     >
                         All {{ total }}
                     </button>
@@ -76,7 +76,7 @@
                             transition
                             hover:opacity-40
                         "
-                        @click="clickProgress"
+                        @click="clickFilter('progress')"
                     >
                         Progress {{ countProgress }}
                     </button>
@@ -89,7 +89,7 @@
                             transition
                             hover:opacity-40
                         "
-                        @click="clickDone"
+                        @click="clickFilter('done')"
                     >
                         Done {{ countDone }}
                     </button>
@@ -114,29 +114,21 @@ export default {
             return this.$store.getters[`todos/${this.filter}`]
         },
         total() {
-            return this.$store.state.todos.todoList.length
+            return this.$store.getters['todos/all'].length
         },
         countProgress() {
-            return this.$store.state.todos.todoList.filter(function (item) {
-                return !item.isComplete
-            }).length
+            return this.$store.getters['todos/progress'].length
         },
         countDone() {
-            return this.total - this.countProgress
+            return this.$store.getters['todos/done'].length
         },
     },
     mounted() {
         this.$store.dispatch('todos/getTodoList')
     },
     methods: {
-        clickAll() {
-            this.filter = 'all'
-        },
-        clickProgress() {
-            this.filter = 'progress'
-        },
-        clickDone() {
-            this.filter = 'done'
+        clickFilter($value = '') {
+            this.filter = $value
         },
     },
 }
