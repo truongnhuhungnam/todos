@@ -27,7 +27,7 @@ export const mutations = {
 export const actions = {
     getTodoList(vuexContext) {
         return this.$axios
-            .$get('https://****************.mockapi.io/todos')
+            .$get('https://60a8d18120a6410017306479.mockapi.io/todos')
             .then((res) => {
                 vuexContext.commit('store', res)
             })
