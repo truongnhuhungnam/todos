@@ -17,13 +17,18 @@
                         <span
                             class="text-xl"
                             :class="{
-                                done: todo.isComplete,
-                                hide: isEdit === todo.id,
+                                'line-through': todo.isComplete,
                             }"
                         >
                             {{ todo.content }}
                         </span>
-                        <!-- <input type="text" class="border-b border-blue-400 py-2 px-2 w-full text-xl" /> -->
+                        <!-- <input
+                            v-if="isEdit === todo.id"
+                            v-model="content"
+                            type="text"
+                            class="border border-blue-400 py-1 px-2 text-xl"
+                            @keydown.enter.stop="editTodo(todo)"
+                        /> -->
                         <div>
                             <button
                                 class="
@@ -58,8 +63,9 @@
                             transition
                             hover:opacity-40
                         "
+                        @click="clickAll"
                     >
-                        All (1)
+                        All {{ total }}
                     </button>
                     <button
                         class="
@@ -70,8 +76,9 @@
                             transition
                             hover:opacity-40
                         "
+                        @click="clickProgress"
                     >
-                        Progress (2)
+                        Progress {{ countProgress }}
                     </button>
                     <button
                         class="
@@ -82,8 +89,9 @@
                             transition
                             hover:opacity-40
                         "
+                        @click="clickDone"
                     >
-                        Done (3)
+                        Done {{ countDone }}
                     </button>
                 </div>
             </div>
@@ -97,17 +105,39 @@ export default {
         return {
             todoList: [],
             filter: 'all',
-            isEdit: -1,
-            content: '',
+            // isEdit: -1,
+            // content: '',
         }
     },
     computed: {
         filterTodos() {
             return this.$store.getters[`todos/${this.filter}`]
         },
+        total() {
+            return this.$store.state.todos.todoList.length
+        },
+        countProgress() {
+            return this.$store.state.todos.todoList.filter(function (item) {
+                return !item.isComplete
+            }).length
+        },
+        countDone() {
+            return this.total - this.countProgress
+        },
     },
     mounted() {
         this.$store.dispatch('todos/getTodoList')
+    },
+    methods: {
+        clickAll() {
+            this.filter = 'all'
+        },
+        clickProgress() {
+            this.filter = 'progress'
+        },
+        clickDone() {
+            this.filter = 'done'
+        },
     },
 }
 </script>
